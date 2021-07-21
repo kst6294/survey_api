@@ -717,4 +717,8 @@ dev.py
 prod.py
 
 
+.db
+db_data
+
+
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,visualstudiocode,vim,python,pycharm,linux,macos-
