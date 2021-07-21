@@ -12,6 +12,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -92,3 +93,5 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with'
 )
+
+AUTH_USER_MODEL = 'core.User'
