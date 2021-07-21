@@ -6,10 +6,9 @@ services:
     command:
       - --default-authentication-plugin=mysql_native_password
     volumes: 
-      - ./db_data:/var/lib/mysql:rw
-      # - .:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=rlatnsxo
+      - ./.db:/var/lib/mysql:rw
+    env_file:
+      - .dockerenv.db.local
     restart: always
     expose:
       - "3306"
@@ -20,15 +19,8 @@ services:
     build:
       context: .
       dockerfile: .
-    environment:
-      - DBBUG=True
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_NAME=survey_api
-      - DB_USER=root
-      - DB_PASSWORD=rlatnsxo
-      - SECRET_KEY=asdf
-      - ALGORITHM=HS256
+    env_file:
+      - .dockerenv.app.local
     ports:
       - 8000:8000
     expose:

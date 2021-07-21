@@ -716,6 +716,10 @@ local.py
 dev.py
 prod.py
 
+.db
+.dockerenv.db.local
+.dockerenv.app.local
+
 
 .db
 db_data
