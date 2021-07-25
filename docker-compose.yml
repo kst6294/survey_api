@@ -1,38 +1,46 @@
 version: "3"
 
-services:
-  db:
-    image: mysql
-    command:
-      - --default-authentication-plugin=mysql_native_password
-    volumes:
-      - ./.db:/var/lib/mysql:rw
-    env_file:
-      - .dockerenv.db.local
-    restart: "always"
-    expose:
-      - "3306"
-    ports:
-      - "3306:3306"
+volumes:
+  data: {}
 
+services:
   app:
     build:
       context: .
-      dockerfile: .
-    expose:
-      - "8000"
-    ports:
-      - "8000:8000"
+      dockerfile: ./Dockerfile-dev
     volumes:
-      - .:/app
-      - /tmp/app/mysqld:/run/mysqld
-    command: >
-      sh -c "python manage.py wait_for_db &&
-             python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
-    env_file:
-      - .dockerenv.app.local
+      - .:/app/
+    environment:
+      - DB_NAME=survey_api
+      - DB_USER=andy
+      - DB_PASSWORD=password
+      - DB_HOST=db
+      - DB_PORT=3306
+      - SECRET_KEY=secret_key
+      - ALGORITHM=HS256
+    ports:
+      - 8000:8000
+    restart: always
     depends_on:
       - db
+    command: >-
+      sh -c 'python manage.py check_db_connection &&
+             python manage.py makemigrations --settings=app.settings.local &&
+             python manage.py migrate --settings=app.settings.local &&
+             python manage.py runserver 0.0.0.0:8000 --settings=app.settings.local'
 
-
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=andy
+      - MYSQL_DATABASE=survey_api
+      - MYSQL_PASSWORD=password
+    ports:
+      - "3306:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --default-authentication-plugin=mysql_native_password
+    volumes:
+      - data:/var/lib/mysql

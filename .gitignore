@@ -716,13 +716,4 @@ local.py
 dev.py
 prod.py
 
-.db
-.dockerenv.db.local
-.dockerenv.app.local
-
-
-.db
-db_data
-
-
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,visualstudiocode,vim,python,pycharm,linux,macos-
