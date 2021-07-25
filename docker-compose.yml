@@ -1,5 +1,6 @@
 version: "3"
 
+<<<<<<< HEAD
 services:
   db:
     image: mysql
@@ -14,10 +15,16 @@ services:
       - "3306"
     ports:
       - "3306:3306"
+=======
+volumes:
+  data: {}
+>>>>>>> 3a525de... [Modify] setting for docker and docker-compose
 
+services:
   app:
     build:
       context: .
+<<<<<<< HEAD
       dockerfile: .
     expose:
       - "8000"
@@ -36,3 +43,42 @@ services:
       - db
 
 
+=======
+      dockerfile: ./Dockerfile-dev
+    volumes:
+      - .:/app/
+    environment:
+      - DB_NAME=survey_api
+      - DB_USER=andy
+      - DB_PASSWORD=password
+      - DB_HOST=db
+      - DB_PORT=3306
+      - SECRET_KEY=secret_key
+      - ALGORITHM=HS256
+    ports:
+      - 8000:8000
+    restart: always
+    depends_on:
+      - db
+    command: >-
+      sh -c 'python manage.py check_db_connection &&
+             python manage.py makemigrations --settings=app.settings.local &&
+             python manage.py migrate --settings=app.settings.local &&
+             python manage.py runserver 0.0.0.0:8000 --settings=app.settings.local'
+
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=andy
+      - MYSQL_DATABASE=survey_api
+      - MYSQL_PASSWORD=password
+    ports:
+      - "3306:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --default-authentication-plugin=mysql_native_password
+    volumes:
+      - data:/var/lib/mysql
+>>>>>>> 3a525de... [Modify] setting for docker and docker-compose
