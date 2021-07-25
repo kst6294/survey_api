@@ -5,11 +5,11 @@ services:
     image: mysql
     command:
       - --default-authentication-plugin=mysql_native_password
-    volumes: 
+    volumes:
       - ./.db:/var/lib/mysql:rw
     env_file:
       - .dockerenv.db.local
-    restart: always
+    restart: "always"
     expose:
       - "3306"
     ports:
@@ -19,13 +19,20 @@ services:
     build:
       context: .
       dockerfile: .
-    env_file:
-      - .dockerenv.app.local
-    ports:
-      - 8000:8000
     expose:
-      - 8000
+      - "8000"
+    ports:
+      - "8000:8000"
     volumes:
       - .:/app
+      - /tmp/app/mysqld:/run/mysqld
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - .dockerenv.app.local
     depends_on:
       - db
+
+
